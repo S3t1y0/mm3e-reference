@@ -451,7 +451,7 @@ const SECTIONS_DATA = [
             {
                 title: "Vulnerable",
                 subtitle: "Active defenses halved",
-                icon: "condition",
+                icon: "vulnerable",
                 type: "Condition",
                 reference: "Hero's Handbook, p. 258",
                 bullets: [
@@ -462,7 +462,7 @@ const SECTIONS_DATA = [
             {
                 title: "Impaired / Disabled",
                 subtitle: "-2 penalty (-5 if Disabled)",
-                icon: "condition",
+                icon: "impaired",
                 type: "Condition",
                 reference: "Hero's Handbook, p. 257",
                 bullets: [
@@ -474,7 +474,7 @@ const SECTIONS_DATA = [
             {
                 title: "Hindered / Immobile",
                 subtitle: "Speed halved (or Speed = 0)",
-                icon: "condition",
+                icon: "hindered",
                 type: "Condition",
                 reference: "Hero's Handbook, p. 257",
                 bullets: [
@@ -497,7 +497,7 @@ const SECTIONS_DATA = [
             {
                 title: "Compelled / Controlled",
                 subtitle: "Mind-controlled by enemy",
-                icon: "condition",
+                icon: "brain",
                 type: "Condition",
                 reference: "Hero's Handbook, p. 257",
                 bullets: [

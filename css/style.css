@@ -294,6 +294,15 @@ html, body {
     stroke: #ffffff;
 }
 
+.item-icon i {
+    font-size: 19px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
 .item-text-container {
     flex: 1;
     min-width: 0;
