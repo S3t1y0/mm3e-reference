@@ -6,10 +6,10 @@
     <title>Mutants & Masterminds 3e Quick Reference</title>
     <meta name="description" content="Fast, information-dense quick reference rules cheat sheet for Mutants & Masterminds 3rd Edition in sleek dark mode." />
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Outfit (Display & UI) + JetBrains Mono (Tabular & Technical) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Open Source Icons (Font Awesome 6 Free CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -22,16 +22,19 @@
     <header class="top-nav">
         <div class="brand-row">
             <div class="brand-title">
-                <span>⚡ Mutants & Masterminds 3e</span>
+                <i class="fa-solid fa-bolt-lightning brand-icon" aria-hidden="true"></i>
+                <span class="brand-text">Mutants &amp; Masterminds 3e</span>
                 <span class="badge">Quick Ref</span>
             </div>
             <div class="search-box">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
                 <input type="text" id="search-input" class="search-input" placeholder="Search rules, actions, conditions, DC... (Press '/' to focus)" autocomplete="off" />
-                <button type="button" id="search-clear" class="search-clear" aria-label="Clear search">✕</button>
+                <button type="button" id="search-clear" class="search-clear" aria-label="Clear search">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
         </div>
         <nav class="filter-pills" id="filter-pills" aria-label="Categories">
@@ -44,16 +47,34 @@
         <!-- Rendered dynamically from js/data.js -->
     </main>
 
-    <!-- Modal Popup Dialog (Faithfully mirrors dnd5e-quickref modal structure) -->
+    <!-- Dedicated Empty State Container -->
+    <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-state-icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <h3 class="empty-state-title">No rules or actions found</h3>
+        <p class="empty-state-desc" id="empty-state-desc">We couldn't find any results matching your search.</p>
+        <button type="button" class="empty-state-btn" id="empty-state-clear-btn">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Reset Search</span>
+        </button>
+    </div>
+
+    <!-- Modal Popup Dialog -->
     <div class="modal" id="modal" role="dialog" aria-modal="true" tabindex="-1">
         <div class="modal-backdrop" id="modal-backdrop"></div>
         <div class="modal-dialog">
             <div class="modal-container" id="modal-container">
                 <div class="modal-header" id="modal-header">
-                    <div id="modal-title">Rule Title</div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="modal-header-left">
+                        <span class="modal-category-pip" id="modal-category-pip"></span>
+                        <div id="modal-title">Rule Title</div>
+                    </div>
+                    <div class="modal-header-right">
                         <span id="modal-type" class="section-limit">Type</span>
-                        <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close">✕</button>
+                        <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="modal-body">

@@ -1,6 +1,7 @@
 /**
  * Mutants & Masterminds 3e Quick Reference Application
- * Core rendering, modal interactions, dynamic color styling, and instant search.
+ * Core rendering, modal interactions, calibrated styling, and instant search.
+ * Engineered to taste-skills specifications.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,6 +13,7 @@ function initApp() {
     const filterPillsContainer = document.getElementById("filter-pills");
     const searchInput = document.getElementById("search-input");
     const searchClear = document.getElementById("search-clear");
+    const emptyStateClearBtn = document.getElementById("empty-state-clear-btn");
     const modal = document.getElementById("modal");
     const modalBackdrop = document.getElementById("modal-backdrop");
     const modalCloseBtn = document.getElementById("modal-close-btn");
@@ -22,7 +24,7 @@ function initApp() {
     // 2. Render filter pills
     renderFilterPills(filterPillsContainer);
 
-    // 3. Search & Filter interactions
+    // 3. Search interactions
     if (searchInput) {
         searchInput.addEventListener("input", (e) => {
             const query = e.target.value.trim().toLowerCase();
@@ -35,18 +37,32 @@ function initApp() {
 
     if (searchClear) {
         searchClear.addEventListener("click", () => {
-            searchInput.value = "";
-            searchClear.style.display = "none";
-            filterItems("");
-            searchInput.focus();
+            clearSearch();
         });
     }
 
-    // Keyboard shortcut: '/' to focus search, 'Esc' to close modal
+    if (emptyStateClearBtn) {
+        emptyStateClearBtn.addEventListener("click", () => {
+            clearSearch();
+        });
+    }
+
+    function clearSearch() {
+        if (searchInput) {
+            searchInput.value = "";
+            searchInput.focus();
+        }
+        if (searchClear) {
+            searchClear.style.display = "none";
+        }
+        filterItems("");
+    }
+
+    // Keyboard shortcuts: '/' to focus search, 'Esc' to close modal
     window.addEventListener("keydown", (e) => {
         if (e.key === "/" && document.activeElement !== searchInput) {
             e.preventDefault();
-            searchInput.focus();
+            if (searchInput) searchInput.focus();
         } else if (e.key === "Escape") {
             closeModal();
         }
@@ -66,18 +82,20 @@ function renderSections(container) {
         sectionEl.id = `section-${sec.id}`;
         sectionEl.className = "section-container";
         sectionEl.dataset.sectionId = sec.id;
-        sectionEl.style.borderColor = sec.color;
+        sectionEl.style.borderTop = `2px solid ${sec.color}`;
 
-        // Title bar
+        // Sleek Section Title Bar
         const titleBar = document.createElement("div");
         titleBar.className = "section-title";
-        titleBar.style.backgroundColor = sec.color;
         titleBar.innerHTML = `
-            <span>${sec.title}</span>
-            <span class="section-limit">${sec.limit || ""}</span>
+            <div class="section-title-left">
+                <span class="section-indicator-pip" style="background-color: ${sec.color}; color: ${sec.color};"></span>
+                <span class="section-title-text">${sec.title}</span>
+            </div>
+            <span class="section-limit" style="border-color: ${sec.color}35; color: ${sec.color};">${sec.limit || ""}</span>
         `;
 
-        // Content
+        // Content Container
         const contentBox = document.createElement("div");
         contentBox.className = "section-content";
 
@@ -119,9 +137,9 @@ function renderSections(container) {
                     <tr>
                         <th style="width: 90px;">Rank</th>
                         <th>Time</th>
-                        <th>Distance (m / km)</th>
-                        <th>Mass (kg / tonnes)</th>
-                        <th>Volume (L / m³)</th>
+                        <th>Distance</th>
+                        <th>Mass</th>
+                        <th>Volume</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -149,7 +167,7 @@ function renderSections(container) {
             tableWrapper.appendChild(table);
             contentBox.appendChild(tableWrapper);
         } else if (sec.items) {
-            // Grid of items
+            // Modern CSS Grid of items
             const grid = document.createElement("div");
             grid.className = "items-grid";
 
@@ -177,7 +195,7 @@ function createItemElement(item, section) {
     const iconSvg = typeof get_icon_svg === "function" ? get_icon_svg(item.icon) : "";
 
     itemEl.innerHTML = `
-        <div class="item-icon" style="background-color: ${section.color}">
+        <div class="item-icon" style="background-color: ${section.color}15; border-color: ${section.color}35; color: ${section.color};">
             ${iconSvg}
         </div>
         <div class="item-text-container">
@@ -197,7 +215,7 @@ function renderFilterPills(container) {
     if (!container || !SECTIONS_DATA) return;
     container.innerHTML = "";
 
-    // "All" pill
+    // "All Categories" pill
     const allPill = document.createElement("div");
     allPill.className = "filter-pill active";
     allPill.textContent = "All Categories";
@@ -208,7 +226,7 @@ function renderFilterPills(container) {
     });
     container.appendChild(allPill);
 
-    // Per-section pills
+    // Individual category pills
     SECTIONS_DATA.forEach((sec) => {
         const pill = document.createElement("div");
         pill.className = "filter-pill";
@@ -226,6 +244,8 @@ function showAllSections() {
     document.querySelectorAll(".section-container").forEach((sec) => {
         sec.style.display = "flex";
     });
+    const emptyState = document.getElementById("empty-state");
+    if (emptyState) emptyState.style.display = "none";
 }
 
 function filterByCategory(sectionId) {
@@ -237,10 +257,15 @@ function filterByCategory(sectionId) {
             sec.style.display = "none";
         }
     });
+    const emptyState = document.getElementById("empty-state");
+    if (emptyState) emptyState.style.display = "none";
 }
 
 function filterItems(query) {
     const sections = document.querySelectorAll(".section-container");
+    const emptyState = document.getElementById("empty-state");
+    const emptyStateDesc = document.getElementById("empty-state-desc");
+    let totalVisibleItems = 0;
 
     sections.forEach((sec) => {
         if (sec.dataset.type === "table") {
@@ -255,7 +280,9 @@ function filterItems(query) {
                     row.style.display = "none";
                 }
             });
-            sec.style.display = (!query || matchingRows > 0) ? "flex" : "none";
+            const isVisible = (!query || matchingRows > 0);
+            sec.style.display = isVisible ? "flex" : "none";
+            if (isVisible) totalVisibleItems += matchingRows;
             return;
         }
 
@@ -276,40 +303,76 @@ function filterItems(query) {
         });
 
         sec.style.display = visibleCount > 0 ? "flex" : "none";
+        totalVisibleItems += visibleCount;
     });
+
+    // Handle Empty State
+    if (emptyState) {
+        if (totalVisibleItems === 0 && query.length > 0) {
+            emptyState.style.display = "block";
+            if (emptyStateDesc) {
+                emptyStateDesc.textContent = `No rules, actions, or measurements found matching "${query}".`;
+            }
+        } else {
+            emptyState.style.display = "none";
+        }
+    }
 }
 
 function openModal(item, section) {
     const modal = document.getElementById("modal");
     const modalContainer = document.getElementById("modal-container");
-    const modalHeader = document.getElementById("modal-header");
+    const modalCategoryPip = document.getElementById("modal-category-pip");
     const modalTitle = document.getElementById("modal-title");
     const modalType = document.getElementById("modal-type");
     const modalSubtitle = document.getElementById("modal-subtitle");
     const modalBullets = document.getElementById("modal-bullets");
     const modalReference = document.getElementById("modal-reference");
 
-    // Inherit the dynamic category color (signature dnd5e-quickref behavior!)
-    modalContainer.style.borderColor = section.color;
-    modalHeader.style.backgroundColor = section.color;
-
-    modalTitle.textContent = item.title;
-    modalType.textContent = item.type || "";
-    modalSubtitle.textContent = item.subtitle || "";
-
-    // Bullet points formatted cleanly
-    if (item.bullets && item.bullets.length > 0) {
-        modalBullets.innerHTML = item.bullets
-            .map((b) => `<p>${b}</p>`)
-            .join("<hr>");
-    } else {
-        modalBullets.innerHTML = "";
+    // Modern subtle accent border & pip glow
+    if (modalContainer) {
+        modalContainer.style.borderColor = `${section.color}45`;
+        modalContainer.style.boxShadow = `0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 24px ${section.color}18, inset 0 1px 0 rgba(255, 255, 255, 0.08)`;
     }
 
-    modalReference.textContent = item.reference || "Hero's Handbook 3e";
+    if (modalCategoryPip) {
+        modalCategoryPip.style.backgroundColor = section.color;
+        modalCategoryPip.style.color = section.color;
+    }
 
-    modal.classList.add("modal-visible");
-    document.body.classList.add("modal-open");
+    if (modalTitle) {
+        modalTitle.textContent = item.title;
+    }
+
+    if (modalType) {
+        modalType.textContent = item.type || "";
+        modalType.style.borderColor = `${section.color}40`;
+        modalType.style.color = section.color;
+    }
+
+    if (modalSubtitle) {
+        modalSubtitle.textContent = item.subtitle || "";
+    }
+
+    // Bullet points formatted cleanly
+    if (modalBullets) {
+        if (item.bullets && item.bullets.length > 0) {
+            modalBullets.innerHTML = item.bullets
+                .map((b) => `<p>${b}</p>`)
+                .join("<hr>");
+        } else {
+            modalBullets.innerHTML = "";
+        }
+    }
+
+    if (modalReference) {
+        modalReference.textContent = item.reference || "Hero's Handbook 3e";
+    }
+
+    if (modal) {
+        modal.classList.add("modal-visible");
+        document.body.classList.add("modal-open");
+    }
 }
 
 function closeModal() {
